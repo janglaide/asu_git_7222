@@ -450,6 +450,7 @@ Ship = function () {
     Game.lives--;
   };
 
+<<<<<<< HEAD
 };
 Ship.prototype = new Sprite();
 
@@ -721,6 +722,401 @@ Explosion = function () {
     }
   };
 };
+=======
+};
+<<<<<<< HEAD
+Ship = function () {
+  this.init("ship",
+            [-5,   4,
+              0, -12,
+              5,   4]);
+
+  this.children.exhaust = new Sprite();
+  this.children.exhaust.init("exhaust",
+                             [-3,  6,
+                               0, 11,
+                               3,  6]);
+
+  this.bulletCounter = 0;
+
+  this.postMove = this.wrapPostMove;
+
+  this.collidesWith = ["asteroid", "bigalien", "alienbullet"];
+
+  this.preMove = function (delta) {
+    if (KEY_STATUS.left) {
+      this.vel.rot = -6;
+    } else if (KEY_STATUS.right) {
+      this.vel.rot = 6;
+    } else {
+      this.vel.rot = 0;
+    }
+
+    if (KEY_STATUS.up) {
+      var rad = ((this.rot-90) * Math.PI)/180;
+      this.acc.x = 0.5 * Math.cos(rad);
+      this.acc.y = 0.5 * Math.sin(rad);
+      this.children.exhaust.visible = Math.random() > 0.1;
+    } else {
+      this.acc.x = 0;
+      this.acc.y = 0;
+      this.children.exhaust.visible = false;
+    }
+
+    if (this.bulletCounter > 0) {
+      this.bulletCounter -= delta;
+    }
+    if (KEY_STATUS.space) {
+      if (this.bulletCounter <= 0) {
+        this.bulletCounter = 10;
+        for (var i = 0; i < this.bullets.length; i++) {
+          if (!this.bullets[i].visible) {
+            SFX.laser().play();
+            var bullet = this.bullets[i];
+            var rad = ((this.rot-90) * Math.PI)/180;
+            var vectorx = Math.cos(rad);
+            var vectory = Math.sin(rad);
+            // move to the nose of the ship
+            bullet.x = this.x + vectorx * 4;
+            bullet.y = this.y + vectory * 4;
+            bullet.vel.x = 6 * vectorx + this.vel.x;
+            bullet.vel.y = 6 * vectory + this.vel.y;
+            bullet.visible = true;
+            break;
+          }
+        }
+      }
+    }
+
+    // limit the ship's speed
+    if (Math.sqrt(this.vel.x * this.vel.x + this.vel.y * this.vel.y) > 8) {
+      this.vel.x *= 0.95;
+      this.vel.y *= 0.95;
+    }
+  };
+
+  this.collision = function (other) {
+    SFX.explosion().play();
+    Game.explosionAt(other.x, other.y);
+    Game.FSM.state = 'player_died';
+    this.visible = false;
+    this.currentNode.leave(this);
+    this.currentNode = null;
+    Game.lives--;
+  };
+
+};
+Ship.prototype = new Sprite();
+BigAlien = function () {
+  this.init("bigalien",
+            [-20,   0,
+             -12,  -4,
+              12,  -4,
+              20,   0,
+              12,   4,
+             -12,   4,
+             -20,   0,
+              20,   0]);
+
+  this.children.top = new Sprite();
+  this.children.top.init("bigalien_top",
+                         [-8, -4,
+                          -6, -6,
+                           6, -6,
+                           8, -4]);
+=======
+Ship.prototype = new Sprite();
+
+BigAlien = function () {
+  this.init("bigalien",
+      [-20,   0,
+        -12,  -4,
+        12,  -4,
+        20,   0,
+        12,   4,
+        -12,   4,
+        -20,   0,
+        20,   0]);
+
+  this.children.top = new Sprite();
+  this.children.top.init("bigalien_top",
+      [-8, -4,
+        -6, -6,
+        6, -6,
+        8, -4]);
+>>>>>>> alternative
+  this.children.top.visible = true;
+
+  this.children.bottom = new Sprite();
+  this.children.bottom.init("bigalien_top",
+<<<<<<< HEAD
+                            [ 8, 4,
+                              6, 6,
+                             -6, 6,
+                             -8, 4]);
+=======
+      [ 8, 4,
+        6, 6,
+        -6, 6,
+        -8, 4]);
+>>>>>>> alternative
+  this.children.bottom.visible = true;
+
+  this.collidesWith = ["asteroid", "ship", "bullet"];
+
+  this.bridgesH = false;
+
+  this.bullets = [];
+  this.bulletCounter = 0;
+
+  this.newPosition = function () {
+    if (Math.random() < 0.5) {
+      this.x = -20;
+      this.vel.x = 1.5;
+    } else {
+      this.x = Game.canvasWidth + 20;
+      this.vel.x = -1.5;
+    }
+    this.y = Math.random() * Game.canvasHeight;
+  };
+
+  this.setup = function () {
+    this.newPosition();
+
+    for (var i = 0; i < 3; i++) {
+      var bull = new AlienBullet();
+      this.bullets.push(bull);
+      Game.sprites.push(bull);
+    }
+  };
+
+  this.preMove = function (delta) {
+    var cn = this.currentNode;
+    if (cn == null) return;
+
+    var topCount = 0;
+    if (cn.north.nextSprite) topCount++;
+    if (cn.north.east.nextSprite) topCount++;
+    if (cn.north.west.nextSprite) topCount++;
+
+    var bottomCount = 0;
+    if (cn.south.nextSprite) bottomCount++;
+    if (cn.south.east.nextSprite) bottomCount++;
+    if (cn.south.west.nextSprite) bottomCount++;
+
+    if (topCount > bottomCount) {
+      this.vel.y = 1;
+    } else if (topCount < bottomCount) {
+      this.vel.y = -1;
+    } else if (Math.random() < 0.01) {
+      this.vel.y = -this.vel.y;
+    }
+
+    this.bulletCounter -= delta;
+    if (this.bulletCounter <= 0) {
+      this.bulletCounter = 22;
+      for (var i = 0; i < this.bullets.length; i++) {
+        if (!this.bullets[i].visible) {
+          bullet = this.bullets[i];
+          var rad = 2 * Math.PI * Math.random();
+          var vectorx = Math.cos(rad);
+          var vectory = Math.sin(rad);
+          bullet.x = this.x;
+          bullet.y = this.y;
+          bullet.vel.x = 6 * vectorx;
+          bullet.vel.y = 6 * vectory;
+          bullet.visible = true;
+          SFX.laser().play();
+          break;
+        }
+      }
+    }
+
+  };
+
+  BigAlien.prototype.collision = function (other) {
+    if (other.name == "bullet") Game.score += 200;
+    SFX.explosion().play();
+    Game.explosionAt(other.x, other.y);
+    this.visible = false;
+    this.newPosition();
+  };
+
+  this.postMove = function () {
+    if (this.y > Game.canvasHeight) {
+      this.y = 0;
+    } else if (this.y < 0) {
+      this.y = Game.canvasHeight;
+    }
+
+    if ((this.vel.x > 0 && this.x > Game.canvasWidth + 20) ||
+        (this.vel.x < 0 && this.x < -20)) {
+      // why did the alien cross the road?
+      this.visible = false;
+      this.newPosition();
+    }
+  }
+};
+BigAlien.prototype = new Sprite();
+
+Bullet = function () {
+  this.init("bullet", [0, 0]);
+  this.time = 0;
+  this.bridgesH = false;
+  this.bridgesV = false;
+  this.postMove = this.wrapPostMove;
+  // asteroid can look for bullets so doesn't have
+  // to be other way around
+  //this.collidesWith = ["asteroid"];
+
+  this.configureTransform = function () {};
+  this.draw = function () {
+    if (this.visible) {
+      this.context.save();
+      this.context.lineWidth = 2;
+      this.context.beginPath();
+      this.context.moveTo(this.x-1, this.y-1);
+      this.context.lineTo(this.x+1, this.y+1);
+      this.context.moveTo(this.x+1, this.y-1);
+      this.context.lineTo(this.x-1, this.y+1);
+      this.context.stroke();
+      this.context.restore();
+    }
+  };
+  this.preMove = function (delta) {
+    if (this.visible) {
+      this.time += delta;
+    }
+    if (this.time > 50) {
+      this.visible = false;
+      this.time = 0;
+    }
+  };
+  this.collision = function (other) {
+    this.time = 0;
+    this.visible = false;
+    this.currentNode.leave(this);
+    this.currentNode = null;
+  };
+  this.transformedPoints = function (other) {
+    return [this.x, this.y];
+  };
+
+};
+Bullet.prototype = new Sprite();
+
+AlienBullet = function () {
+  this.init("alienbullet");
+
+  this.draw = function () {
+    if (this.visible) {
+      this.context.save();
+      this.context.lineWidth = 2;
+      this.context.beginPath();
+      this.context.moveTo(this.x, this.y);
+      this.context.lineTo(this.x-this.vel.x, this.y-this.vel.y);
+      this.context.stroke();
+      this.context.restore();
+    }
+  };
+};
+AlienBullet.prototype = new Bullet();
+
+Asteroid = function () {
+  this.init("asteroid",
+<<<<<<< HEAD
+            [-10,   0,
+              -5,   7,
+              -3,   4,
+               1,  10,
+               5,   4,
+              10,   0,
+               5,  -6,
+               2, -10,
+              -4, -10,
+              -4,  -5]);
+=======
+      [-10,   0,
+        -5,   7,
+        -3,   4,
+        1,  10,
+        5,   4,
+        10,   0,
+        5,  -6,
+        2, -10,
+        -4, -10,
+        -4,  -5]);
+>>>>>>> alternative
+
+  this.visible = true;
+  this.scale = 6;
+  this.postMove = this.wrapPostMove;
+
+  this.collidesWith = ["ship", "bullet", "bigalien", "alienbullet"];
+
+  this.collision = function (other) {
+    SFX.explosion().play();
+    if (other.name == "bullet") Game.score += 120 / this.scale;
+    this.scale /= 3;
+    if (this.scale > 0.5) {
+      // break into fragments
+      for (var i = 0; i < 3; i++) {
+        var roid = $.extend(true, {}, this);
+        roid.vel.x = Math.random() * 6 - 3;
+        roid.vel.y = Math.random() * 6 - 3;
+        if (Math.random() > 0.5) {
+          roid.points.reverse();
+        }
+        roid.vel.rot = Math.random() * 2 - 1;
+        roid.move(roid.scale * 3); // give them a little push
+        Game.sprites.push(roid);
+      }
+    }
+    Game.explosionAt(other.x, other.y);
+    this.die();
+  };
+};
+Asteroid.prototype = new Sprite();
+
+Explosion = function () {
+  this.init("explosion");
+
+  this.bridgesH = false;
+  this.bridgesV = false;
+
+  this.lines = [];
+  for (var i = 0; i < 5; i++) {
+    var rad = 2 * Math.PI * Math.random();
+    var x = Math.cos(rad);
+    var y = Math.sin(rad);
+    this.lines.push([x, y, x*2, y*2]);
+  }
+
+  this.draw = function () {
+    if (this.visible) {
+      this.context.save();
+      this.context.lineWidth = 1.0 / this.scale;
+      this.context.beginPath();
+      for (var i = 0; i < 5; i++) {
+        var line = this.lines[i];
+        this.context.moveTo(line[0], line[1]);
+        this.context.lineTo(line[2], line[3]);
+      }
+      this.context.stroke();
+      this.context.restore();
+    }
+  };
+
+  this.preMove = function (delta) {
+    if (this.visible) {
+      this.scale += delta;
+    }
+    if (this.scale > 8) {
+      this.die();
+    }
+  };
+};
+>>>>>>> feature/a_is7222
 Explosion.prototype = new Sprite();
 
 GridNode = function () {
@@ -934,7 +1330,15 @@ Game = {
         if (Game.sprites[i].name == 'asteroid') {
           Game.sprites[i].die();
         } else if (Game.sprites[i].name == 'bullet' ||
+<<<<<<< HEAD
             Game.sprites[i].name == 'bigalien') {
+=======
+<<<<<<< HEAD
+                   Game.sprites[i].name == 'bigalien') {
+=======
+            Game.sprites[i].name == 'bigalien') {
+>>>>>>> alternative
+>>>>>>> feature/a_is7222
           Game.sprites[i].visible = false;
         }
       }
@@ -1120,6 +1524,18 @@ $(function () {
   // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
   window.requestAnimFrame = (function () {
     return  window.requestAnimationFrame       ||
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame    ||
+            window.oRequestAnimationFrame      ||
+            window.msRequestAnimationFrame     ||
+            function (/* function */ callback, /* DOMElement */ element) {
+              window.setTimeout(callback, 1000 / 60);
+            };
+=======
+>>>>>>> feature/a_is7222
         window.webkitRequestAnimationFrame ||
         window.mozRequestAnimationFrame    ||
         window.oRequestAnimationFrame      ||
@@ -1127,6 +1543,10 @@ $(function () {
         function (/* function */ callback, /* DOMElement */ element) {
           window.setTimeout(callback, 1000 / 60);
         };
+<<<<<<< HEAD
+=======
+>>>>>>> alternative
+>>>>>>> feature/a_is7222
   })();
 
   var mainLoop = function () {
@@ -1219,4 +1639,8 @@ $(function () {
   });
 });
 
+<<<<<<< HEAD
 // vim: fdl=0
+=======
+// 
+>>>>>>> feature/a_is7222
