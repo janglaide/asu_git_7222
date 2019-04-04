@@ -450,7 +450,6 @@ Ship = function () {
     Game.lives--;
   };
 
-<<<<<<< HEAD
 };
 Ship.prototype = new Sprite();
 
@@ -630,7 +629,7 @@ AlienBullet = function () {
   this.draw = function () {
     if (this.visible) {
       this.context.save();
-      this.context.lineWidth = 2;
+      this.context.lineWidth = 1;
       this.context.beginPath();
       this.context.moveTo(this.x, this.y);
       this.context.lineTo(this.x-this.vel.x, this.y-this.vel.y);
@@ -722,9 +721,8 @@ Explosion = function () {
     }
   };
 };
-=======
-};
-<<<<<<< HEAD
+
+
 Ship = function () {
   this.init("ship",
             [-5,   4,
@@ -824,42 +822,14 @@ BigAlien = function () {
                           -6, -6,
                            6, -6,
                            8, -4]);
-=======
-Ship.prototype = new Sprite();
-
-BigAlien = function () {
-  this.init("bigalien",
-      [-20,   0,
-        -12,  -4,
-        12,  -4,
-        20,   0,
-        12,   4,
-        -12,   4,
-        -20,   0,
-        20,   0]);
-
-  this.children.top = new Sprite();
-  this.children.top.init("bigalien_top",
-      [-8, -4,
-        -6, -6,
-        6, -6,
-        8, -4]);
->>>>>>> alternative
   this.children.top.visible = true;
 
   this.children.bottom = new Sprite();
   this.children.bottom.init("bigalien_top",
-<<<<<<< HEAD
-                            [ 8, 4,
-                              6, 6,
-                             -6, 6,
-                             -8, 4]);
-=======
       [ 8, 4,
         6, 6,
         -6, 6,
         -8, 4]);
->>>>>>> alternative
   this.children.bottom.visible = true;
 
   this.collidesWith = ["asteroid", "ship", "bullet"];
@@ -1011,7 +981,7 @@ AlienBullet = function () {
   this.draw = function () {
     if (this.visible) {
       this.context.save();
-      this.context.lineWidth = 2;
+      this.context.lineWidth = 1;
       this.context.beginPath();
       this.context.moveTo(this.x, this.y);
       this.context.lineTo(this.x-this.vel.x, this.y-this.vel.y);
@@ -1024,7 +994,6 @@ AlienBullet.prototype = new Bullet();
 
 Asteroid = function () {
   this.init("asteroid",
-<<<<<<< HEAD
             [-10,   0,
               -5,   7,
               -3,   4,
@@ -1035,18 +1004,6 @@ Asteroid = function () {
                2, -10,
               -4, -10,
               -4,  -5]);
-=======
-      [-10,   0,
-        -5,   7,
-        -3,   4,
-        1,  10,
-        5,   4,
-        10,   0,
-        5,  -6,
-        2, -10,
-        -4, -10,
-        -4,  -5]);
->>>>>>> alternative
 
   this.visible = true;
   this.scale = 6;
@@ -1116,7 +1073,7 @@ Explosion = function () {
     }
   };
 };
->>>>>>> feature/a_is7222
+
 Explosion.prototype = new Sprite();
 
 GridNode = function () {
@@ -1331,15 +1288,7 @@ Game = {
         if (Game.sprites[i].name == 'asteroid') {
           Game.sprites[i].die();
         } else if (Game.sprites[i].name == 'bullet' ||
-<<<<<<< HEAD
-            Game.sprites[i].name == 'bigalien') {
-=======
-<<<<<<< HEAD
                    Game.sprites[i].name == 'bigalien') {
-=======
-            Game.sprites[i].name == 'bigalien') {
->>>>>>> alternative
->>>>>>> feature/a_is7222
           Game.sprites[i].visible = false;
         }
       }
@@ -1525,9 +1474,6 @@ $(function () {
   // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
   window.requestAnimFrame = (function () {
     return  window.requestAnimationFrame       ||
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
             window.webkitRequestAnimationFrame ||
             window.mozRequestAnimationFrame    ||
             window.oRequestAnimationFrame      ||
@@ -1535,8 +1481,6 @@ $(function () {
             function (/* function */ callback, /* DOMElement */ element) {
               window.setTimeout(callback, 1000 / 60);
             };
-=======
->>>>>>> feature/a_is7222
         window.webkitRequestAnimationFrame ||
         window.mozRequestAnimationFrame    ||
         window.oRequestAnimationFrame      ||
@@ -1544,10 +1488,6 @@ $(function () {
         function (/* function */ callback, /* DOMElement */ element) {
           window.setTimeout(callback, 1000 / 60);
         };
-<<<<<<< HEAD
-=======
->>>>>>> alternative
->>>>>>> feature/a_is7222
   })();
 
   var mainLoop = function () {
@@ -1640,8 +1580,4 @@ $(function () {
   });
 });
 
-<<<<<<< HEAD
 // vim: fdl=0
-=======
-// 
->>>>>>> feature/a_is7222
